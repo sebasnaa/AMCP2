@@ -20,12 +20,14 @@ import javax.swing.SwingConstants;
  */
 public class menu extends javax.swing.JFrame {
 
-    private AFD automataFD = new AFD();
+    private AFD automataAFD = new AFD();
 
     private HashSet<String> contenerdorEstados = new HashSet();
     private HashSet<String> contenedorSimbolos = new HashSet();
-
     GrafoAutomata grafico = new GrafoAutomata();
+
+    private int iCadena = 0;
+    private String estadoActual = "";
 
     public menu() {
         initComponents();
@@ -33,6 +35,9 @@ public class menu extends javax.swing.JFrame {
         jRadioButtonAFD.setSelected(true);
         etiquetaEstadosFinales.setVisible(false);
         desplegableEstadosFinales.setVisible(false);
+
+        jButtonPasoPaso.setEnabled(false);
+        jButtonCompleto.setEnabled(false);
     }
 
     /**
@@ -71,9 +76,9 @@ public class menu extends javax.swing.JFrame {
         etiquetaEstadosFinales = new javax.swing.JLabel();
         jRadioButtonAFND = new javax.swing.JRadioButton();
         desplegableEstadosFinales = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jTextField3 = new javax.swing.JTextField();
+        jButtonPasoPaso = new javax.swing.JButton();
+        jButtonCompleto = new javax.swing.JButton();
+        jTextFieldCadena = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -143,12 +148,17 @@ public class menu extends javax.swing.JFrame {
 
         desplegableEstadosFinales.setText("Seleccionar");
 
-        jButton4.setText("Paso a Paso");
-
-        jButton5.setText("Completo");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        jButtonPasoPaso.setText("Paso a Paso");
+        jButtonPasoPaso.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                jButtonPasoPasoActionPerformed(evt);
+            }
+        });
+
+        jButtonCompleto.setText("Completo");
+        jButtonCompleto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCompletoActionPerformed(evt);
             }
         });
 
@@ -238,10 +248,10 @@ public class menu extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createSequentialGroup()
                                     .addGap(13, 13, 13)
-                                    .addComponent(jButton5)
+                                    .addComponent(jButtonCompleto)
                                     .addGap(18, 18, 18)
-                                    .addComponent(jButton4))
-                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jButtonPasoPaso))
+                                .addComponent(jTextFieldCadena, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(183, 183, 183))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -273,11 +283,11 @@ public class menu extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jTextFieldCadena, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(12, 12, 12)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jButton4)
-                                    .addComponent(jButton5))))
+                                    .addComponent(jButtonPasoPaso)
+                                    .addComponent(jButtonCompleto))))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(33, 33, 33)
@@ -330,6 +340,7 @@ public class menu extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
+        iCadena = 0;
         EmergenteCargado Em = new EmergenteCargado(this);
         String nombreArchivo = Em.getNombreElegido();
 
@@ -340,13 +351,19 @@ public class menu extends javax.swing.JFrame {
             AFD automata = new AFD();
 
             try {
-                automata = FicherosAutomatas.lecturaAFD(nombreArchivo);
+                automataAFD = FicherosAutomatas.lecturaAFD(nombreArchivo);
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
 
-            contenerdorEstados.addAll(automata.getEstados());
-            dibujo = grafico.pintarAFD(automata, contenerdorEstados);
+//            contenerdorEstados.addAll(automata.getEstados());
+//            dibujo = grafico.pintarAFD(automata, contenerdorEstados);
+            contenerdorEstados.addAll(automataAFD.getEstados());
+            dibujo = grafico.pintarAFD(automataAFD, contenerdorEstados);
+            if (grafico.isDibujoCompleto()) {
+                jButtonPasoPaso.setEnabled(true);
+                jButtonCompleto.setEnabled(true);
+            }
 
             jScrollPane2.add(dibujo);
             jScrollPane2.getViewport().add(dibujo);
@@ -378,9 +395,36 @@ public class menu extends javax.swing.JFrame {
         desplegableEstadosFinales.setVisible(false);
     }//GEN-LAST:event_jRadioButtonAFDActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void jButtonCompletoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCompletoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_jButtonCompletoActionPerformed
+
+    private void jButtonPasoPasoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPasoPasoActionPerformed
+
+        mxGraphComponent dibujo;
+
+        if (jRadioButtonAFD.isSelected()) {
+            if (iCadena == 0) {
+                estadoActual = automataAFD.getEstadoInicial();
+                dibujo = grafico.pintarPasoAFD(automataAFD, contenerdorEstados, estadoActual);
+            }
+            estadoActual = automataAFD.getTransicion(estadoActual, jTextFieldCadena.getText().charAt(iCadena));
+            contenerdorEstados.addAll(automataAFD.getEstados());
+            dibujo = grafico.pintarPasoAFD(automataAFD, contenerdorEstados, estadoActual);
+
+            jScrollPane2.add(dibujo);
+            jScrollPane2.getViewport().add(dibujo);
+            jScrollPane2.revalidate();
+            jScrollPane2.repaint();
+        }
+        iCadena++;
+
+        if (iCadena == jTextFieldCadena.getText().length()) {
+            jButtonPasoPaso.setEnabled(false);
+        }
+
+
+    }//GEN-LAST:event_jButtonPasoPasoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -428,8 +472,8 @@ public class menu extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButtonCompleto;
+    private javax.swing.JButton jButtonPasoPaso;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JComboBox<String> jComboBox4;
@@ -450,6 +494,6 @@ public class menu extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextFieldCadena;
     // End of variables declaration//GEN-END:variables
 }

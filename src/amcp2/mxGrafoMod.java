@@ -44,6 +44,12 @@ public class mxGrafoMod extends mxGraph {
         estiloEstadoMuerto.put(mxConstants.STYLE_FILLCOLOR, "#FFFB00");
         estiloEstadoMuerto.put(mxConstants.STYLE_FONTCOLOR, "#000000");
 
+        Hashtable<String, Object> estiloEstadoActivo = new Hashtable<>();
+        estiloEstadoActivo.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_ELLIPSE);
+        estiloEstadoActivo.put(mxConstants.STYLE_FONTSIZE, 20);
+        estiloEstadoActivo.put(mxConstants.STYLE_FILLCOLOR, "yellow");
+        estiloEstadoActivo.put(mxConstants.STYLE_FONTCOLOR, "#000000");
+
         Map<String, Object> edgeStyle = new Hashtable<String, Object>();
         edgeStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
         edgeStyle.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_CLASSIC);
@@ -55,6 +61,7 @@ public class mxGrafoMod extends mxGraph {
         stylesheet.putCellStyle("estiloEstado", estiloEstado);
         stylesheet.putCellStyle("estiloEstadoInicial", estiloEstadoInicial);
         stylesheet.putCellStyle("estiloEstadoMuerto", estiloEstadoMuerto);
+        stylesheet.putCellStyle("estiloEstadoActivo", estiloEstadoActivo);
 
         setStylesheet(stylesheet);
 
