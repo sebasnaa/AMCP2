@@ -47,7 +47,7 @@ public class mxGrafoMod extends mxGraph {
         Hashtable<String, Object> estiloEstadoActivo = new Hashtable<>();
         estiloEstadoActivo.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_ELLIPSE);
         estiloEstadoActivo.put(mxConstants.STYLE_FONTSIZE, 20);
-        estiloEstadoActivo.put(mxConstants.STYLE_FILLCOLOR, "yellow");
+        estiloEstadoActivo.put(mxConstants.STYLE_FILLCOLOR, "#D081FF");
         estiloEstadoActivo.put(mxConstants.STYLE_FONTCOLOR, "#000000");
 
         Map<String, Object> edgeStyle = new Hashtable<String, Object>();

@@ -159,5 +159,7 @@ public class GrafoAutomata {
     public boolean isDibujoCompleto() {
         return dibujoCompleto;
     }
+    
+    
 
 }

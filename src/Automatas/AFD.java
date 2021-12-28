@@ -7,6 +7,7 @@ package Automatas;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -72,6 +73,10 @@ public class AFD implements Cloneable, Proceso {
     public void setEstados(HashSet<String> estados) {
         this.estados = estados;
     }
+    
+    public void setEstado(String estado){
+        this.estados.add(estado);
+    }
 
     public HashSet<String> getEstados() {
         return this.estados;
@@ -88,7 +93,13 @@ public class AFD implements Cloneable, Proceso {
     public void agregarEstadoFinal(String estadoFinal) {
         this.estadosFinales.add(estadoFinal);
     }
+    
+    public void agregarEstadoFinalUnico(String estadoFinal) {
+        this.estadosFinales.clear();
+        this.estadosFinales.add(estadoFinal);
+    }
 
+    @Override
     public boolean esFinal(String estadoFinal) {
         return this.estadosFinales.contains(estadoFinal);
     }
@@ -127,6 +138,7 @@ public class AFD implements Cloneable, Proceso {
         this.transiciones.remove(t);
     }
 
+    @Override
     public boolean reconocer(String cadena) throws Exception {
         //Comprobamos la entrada de cadena y los estados
         if (estadoIni.equals("")) {
@@ -143,27 +155,38 @@ public class AFD implements Cloneable, Proceso {
         //Desde estado inicial+1 vamos recorriendo todos los estado 
         for (int i = 0; i < simbolos.length; i++) {
             estado = getTransicion(estado, simbolos[i]);
-            if (estado.equals("")) {
-                throw new Exception("ERROR: caracter" + simbolos[i] + " no valido en transicion ");
-            }
+            //System.out.println("estado " +estado  + "simbolo " + simbolos[i]);
+            
+        if(estado.equals("-")){
+            throw new Exception("Estado Muerto");
+        }
+//            else if(estado.equals("")) {
+//                throw new Exception("ERROR: caracter " + simbolos[i] + " no valido en transicion ");
+//            }
         }
         return esFinal(estado);
     }
 
+    @Override
     public String toString() {
         String res = "";
         HashSet<String> estados = new HashSet();
 
         res += "Estados -> ";
 
-        for (AFDTransicion t : this.transiciones) {
-            estados.add(t.getEstadoOrigen());
-            estados.add(t.getEstadoDestino());
-        }
-
-        for (String s : estados) {
+        
+        System.out.println(this.estados.size());
+        for (String s : this.estados) {
             res += s + " ";
         }
+        
+        
+        for (AFDTransicion t : this.transiciones) {
+            this.estados.add(t.getEstadoOrigen());
+            this.estados.add(t.getEstadoDestino());
+        }
+
+        
 
         res += "\nEstado Inicial -> " + this.estadoIni + "\n";
         res += "Estados Finales -> ";
