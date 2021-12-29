@@ -94,10 +94,11 @@ public class menu extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextAreatoStringAutomata = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton2.setText("Cargar Automata");
+        jButton2.setText("Cargar Automata Fichero");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -195,6 +196,13 @@ public class menu extends javax.swing.JFrame {
             }
         });
 
+        jButton4.setText("Dibujar Automata");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -277,8 +285,13 @@ public class menu extends javax.swing.JFrame {
                                 .addComponent(jTextFieldCadena, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(183, 183, 183))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(138, 138, 138)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(138, 138, 138)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(270, 270, 270)
+                                .addComponent(jButton4)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -313,10 +326,7 @@ public class menu extends javax.swing.JFrame {
                                     .addComponent(jButtonPasoPaso)
                                     .addComponent(jButtonCompleto))))
                         .addGap(33, 33, 33)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(64, 64, 64))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(etiquetaEstadoFinal)
@@ -349,9 +359,14 @@ public class menu extends javax.swing.JFrame {
                                         .addComponent(desplegableEstadoOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton3)
-                                .addGap(18, 18, 18)
-                                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(23, 23, 23))))
+                                .addGap(18, 18, 18))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(31, 31, 31)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButton4)
+                            .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(10, 10, 10))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(66, 66, 66)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -391,6 +406,19 @@ public class menu extends javax.swing.JFrame {
             jScrollPane2.getViewport().add(dibujo);
             jScrollPane2.revalidate();
             jScrollPane2.repaint();
+            
+            
+            HashSet<String> estadosCargados = automataAFD.getEstados();
+            for(String e : estadosCargados){
+                if(!e.equals("-")){
+                    
+                    desplegableEstadoInicial.addItem(e);
+                    desplegableEstadoFinal.addItem(e);
+                    desplegableEstadoOrigen.addItem(e);
+                    desplegableEstadoDestino.addItem(e);
+                }
+            }
+            
         }
 
         pintarLienzo();
@@ -481,7 +509,8 @@ public class menu extends javax.swing.JFrame {
                 } else {
                     JOptionPane.showMessageDialog(null, "Cadena rechazada", "Resultado", JOptionPane.INFORMATION_MESSAGE);
                 }
-                jButtonPasoPaso.setEnabled(false);
+                //jButtonPasoPaso.setEnabled(false);
+                iCadena = 0;
             }
         } else {
             JOptionPane.showMessageDialog(null, "Cadena vacia", "Informacion", JOptionPane.INFORMATION_MESSAGE);
@@ -525,8 +554,25 @@ public class menu extends javax.swing.JFrame {
             pintarLienzo();
         }
 
-
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        
+
+        mxGraphComponent dibujo;
+        contenerdorEstados.addAll(automataAFD.getEstados());
+        dibujo = grafico.pintarAFD(automataAFD, contenerdorEstados);
+        if (grafico.isDibujoCompleto()) {
+            jButtonPasoPaso.setEnabled(true);
+            jButtonCompleto.setEnabled(true);
+        }
+
+        jScrollPane2.add(dibujo);
+        jScrollPane2.getViewport().add(dibujo);
+        jScrollPane2.revalidate();
+        jScrollPane2.repaint();
+
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -577,6 +623,7 @@ public class menu extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButtonAgregarEstado;
     private javax.swing.JButton jButtonCompleto;
     private javax.swing.JButton jButtonPasoPaso;
