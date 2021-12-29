@@ -27,27 +27,73 @@ public class AFD implements Cloneable, Proceso {
 
     }
 
-    public void agregarTransicion(String e1, char simbolo, String e2) {
-        this.transiciones.add(new AFDTransicion(e1, simbolo, e2));
+    public void agregarTransicion(String e1, char simbolo, String e2) throws Exception {
+
+        AFDTransicion t = new AFDTransicion(e1, simbolo, e2);
+
+        agregarTransicion(t);
     }
 
-    public void agregarTransicion(int e1, char simbolo, int e2) {
+    public void agregarTransicion(int e1, char simbolo, int e2) throws Exception {
         String se1 = "" + e1;
         String se2 = "" + e2;
         agregarTransicion(se1, simbolo, se2);
     }
 
-    public void agregarTransicion(AFDTransicion trans) {
+    public void agregarTransicion(AFDTransicion trans) throws Exception {
+        if (existeTransicion(trans)) {
+            throw new Exception("La transacion ya existe");
+        }
+
+        AFDTransicion antigua = transicionUnica(trans);
+        if (antigua != null) {
+            //Es decir ya hay alguna Trnasicion con origen y simbolo modificamos el destino
+            eliminarTransicion(antigua);
+        }
+
         this.transiciones.add(trans);
+
     }
 
     public String getTransicion(String estado, char simbolo) {
+        if (estado.equals("-")) {
+            return "estadoMuerto";
+        }
         for (AFDTransicion t : this.transiciones) {
             if (t.getEstadoOrigen().equals(estado) && t.getSimbolo() == simbolo) {
+
                 return t.getEstadoDestino();
             }
         }
-        return "";
+
+        return "null";
+    }
+
+    private boolean existeTransicion(AFDTransicion trans) {
+        for (AFDTransicion t : this.getTransiciones()) {
+            if (trans.equals(t)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private AFDTransicion transicionUnica(AFDTransicion trans) {
+        AFDTransicion res = null;
+        for (AFDTransicion t : this.getTransiciones()) {
+            if (trans.getEstadoOrigen().equals(t.getEstadoOrigen()) && (trans.getSimbolo() == t.getSimbolo())) {
+                return t;
+            }
+        }
+        return res;
+    }
+
+    public HashSet<Character> getSimbolos() {
+        HashSet<Character> res = new HashSet();
+        for (AFDTransicion t : this.getTransiciones()) {
+            res.add(t.getSimbolo());
+        }
+        return res;
     }
 
     public String getEstadoInicial() {
@@ -73,8 +119,8 @@ public class AFD implements Cloneable, Proceso {
     public void setEstados(HashSet<String> estados) {
         this.estados = estados;
     }
-    
-    public void setEstado(String estado){
+
+    public void setEstado(String estado) {
         this.estados.add(estado);
     }
 
@@ -93,7 +139,7 @@ public class AFD implements Cloneable, Proceso {
     public void agregarEstadoFinal(String estadoFinal) {
         this.estadosFinales.add(estadoFinal);
     }
-    
+
     public void agregarEstadoFinalUnico(String estadoFinal) {
         this.estadosFinales.clear();
         this.estadosFinales.add(estadoFinal);
@@ -155,14 +201,10 @@ public class AFD implements Cloneable, Proceso {
         //Desde estado inicial+1 vamos recorriendo todos los estado 
         for (int i = 0; i < simbolos.length; i++) {
             estado = getTransicion(estado, simbolos[i]);
-            //System.out.println("estado " +estado  + "simbolo " + simbolos[i]);
-            
-        if(estado.equals("-")){
-            throw new Exception("Estado Muerto");
-        }
-//            else if(estado.equals("")) {
-//                throw new Exception("ERROR: caracter " + simbolos[i] + " no valido en transicion ");
-//            }
+
+            if (estado.equals("-")) {
+                throw new Exception("Estado Muerto");
+            }
         }
         return esFinal(estado);
     }
@@ -174,19 +216,16 @@ public class AFD implements Cloneable, Proceso {
 
         res += "Estados -> ";
 
-        
-        System.out.println(this.estados.size());
         for (String s : this.estados) {
-            res += s + " ";
+            if (!s.equals("-")) {
+                res += s + " ";
+            }
         }
-        
-        
+
         for (AFDTransicion t : this.transiciones) {
             this.estados.add(t.getEstadoOrigen());
             this.estados.add(t.getEstadoDestino());
         }
-
-        
 
         res += "\nEstado Inicial -> " + this.estadoIni + "\n";
         res += "Estados Finales -> ";

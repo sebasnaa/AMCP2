@@ -6,7 +6,6 @@
 package Ventanas;
 
 import Automatas.AFD;
-import Automatas.AFDTransicion;
 import Ficheros.FicherosAutomatas;
 import amcp2.GrafoAutomata;
 import com.mxgraph.swing.mxGraphComponent;
@@ -25,7 +24,7 @@ public class menu extends javax.swing.JFrame {
     private HashSet<String> contenedorSimbolos = new HashSet();
     GrafoAutomata grafico = new GrafoAutomata();
 
-    private int iCadena = 0;
+    public static int iCadena = 0;
     private String estadoActual = "";
 
     public menu() {
@@ -45,6 +44,7 @@ public class menu extends javax.swing.JFrame {
 
         desplegableEstadoOrigen.removeAllItems();
         desplegableEstadoDestino.removeAllItems();
+
     }
 
     public void pintarLienzo() {
@@ -94,7 +94,10 @@ public class menu extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextAreatoStringAutomata = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        jButtonDibujarAutomata = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -115,7 +118,7 @@ public class menu extends javax.swing.JFrame {
             }
         });
 
-        jButtonAgregarEstado.setText("Agregar estado");
+        jButtonAgregarEstado.setText("Agregar ");
         jButtonAgregarEstado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonAgregarEstadoActionPerformed(evt);
@@ -142,7 +145,7 @@ public class menu extends javax.swing.JFrame {
 
         jLabel8.setText("Simbolo");
 
-        jButton3.setText("Agregar Transicion");
+        jButton3.setText("Agregar ");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -196,82 +199,96 @@ public class menu extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setText("Dibujar Automata");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        jButtonDibujarAutomata.setText("Dibujar Automata");
+        jButtonDibujarAutomata.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                jButtonDibujarAutomataActionPerformed(evt);
             }
         });
+
+        jButton5.setText("Eliminar");
+
+        jButton6.setText("Eliminar");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Estado muerto (-)");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
+                        .addGap(29, 29, 29)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(16, 16, 16)
-                                .addComponent(jLabel1)
-                                .addGap(41, 41, 41)
-                                .addComponent(jRadioButtonAFD)
-                                .addGap(31, 31, 31)
-                                .addComponent(jRadioButtonAFND))
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(28, 28, 28)
+                                .addComponent(jTextFieldEstadoAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(44, 44, 44)
+                                .addComponent(jButton6)
+                                .addGap(30, 30, 30)
+                                .addComponent(jButtonAgregarEstado))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(29, 29, 29)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(28, 28, 28)
-                                        .addComponent(jTextFieldEstadoAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(38, 38, 38)
-                                        .addComponent(jButtonAgregarEstado))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButton1)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(etiquetaEstadoInicial)
                                         .addGap(18, 18, 18)
                                         .addComponent(desplegableEstadoInicial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(40, 40, 40)
-                                        .addComponent(etiquetaEstadoFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(desplegableEstadoFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(etiquetaEstadosFinales)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(desplegableEstadosFinales))))
+                                        .addComponent(etiquetaEstadoFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(desplegableEstadoFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(etiquetaEstadosFinales)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(desplegableEstadosFinales))))
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(desplegableEstadoOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(55, 55, 55)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(20, 20, 20)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(290, 290, 290)
-                                        .addComponent(jButton3))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(desplegableEstadoOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(55, 55, 55)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addGroup(layout.createSequentialGroup()
-                                                        .addGap(10, 10, 10)
-                                                        .addComponent(jLabel8))
-                                                    .addComponent(jTextFieldSimboloT, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGap(36, 36, 36)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                    .addComponent(desplegableEstadoDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(10, 10, 10)
+                                        .addComponent(jLabel8))
+                                    .addComponent(jTextFieldSimboloT, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(36, 36, 36)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(desplegableEstadoDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(52, 52, 52)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(177, 177, 177)
-                        .addComponent(jButton1)))
+                        .addGap(16, 16, 16)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(41, 41, 41)
+                                .addComponent(jRadioButtonAFD)
+                                .addGap(31, 31, 31)
+                                .addComponent(jRadioButtonAFND)))))
+                .addGap(38, 38, 38)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jLabel3)
@@ -291,7 +308,7 @@ public class menu extends javax.swing.JFrame {
                                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(270, 270, 270)
-                                .addComponent(jButton4)))
+                                .addComponent(jButtonDibujarAutomata)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -310,13 +327,16 @@ public class menu extends javax.swing.JFrame {
                                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jRadioButtonAFD)
                                     .addComponent(jRadioButtonAFND))
-                                .addGap(28, 28, 28)
+                                .addGap(3, 3, 3)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(12, 12, 12)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jTextFieldEstadoAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButtonAgregarEstado)))
+                                    .addComponent(jButtonAgregarEstado)
+                                    .addComponent(jButton6)))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -326,7 +346,7 @@ public class menu extends javax.swing.JFrame {
                                     .addComponent(jButtonPasoPaso)
                                     .addComponent(jButtonCompleto))))
                         .addGap(33, 33, 33)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(etiquetaEstadoFinal)
@@ -335,36 +355,39 @@ public class menu extends javax.swing.JFrame {
                                     .addComponent(desplegableEstadoInicial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(etiquetaEstadosFinales)
                                     .addComponent(desplegableEstadosFinales))
-                                .addGap(30, 30, 30)
+                                .addGap(29, 29, 29)
                                 .addComponent(jButton1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(18, 18, 18)
+                                                    .addComponent(jLabel8)
+                                                    .addGap(18, 18, 18)
+                                                    .addComponent(jTextFieldSimboloT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                    .addComponent(jLabel6)
+                                                    .addGap(18, 18, 18)
+                                                    .addComponent(desplegableEstadoOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                             .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLabel8)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jTextFieldSimboloT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(50, 50, 50)
                                                 .addComponent(jLabel7)
                                                 .addGap(18, 18, 18)
                                                 .addComponent(desplegableEstadoDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jLabel6)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(desplegableEstadoOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton3)
-                                .addGap(18, 18, 18))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(31, 31, 31)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(60, 60, 60)
+                                        .addComponent(jButton3)
+                                        .addGap(35, 35, 35)
+                                        .addComponent(jButton5))))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(31, 31, 31)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton4)
+                            .addComponent(jButtonDibujarAutomata)
                             .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(10, 10, 10))
                     .addGroup(layout.createSequentialGroup()
@@ -406,19 +429,19 @@ public class menu extends javax.swing.JFrame {
             jScrollPane2.getViewport().add(dibujo);
             jScrollPane2.revalidate();
             jScrollPane2.repaint();
-            
-            
-            HashSet<String> estadosCargados = automataAFD.getEstados();
-            for(String e : estadosCargados){
-                if(!e.equals("-")){
-                    
-                    desplegableEstadoInicial.addItem(e);
-                    desplegableEstadoFinal.addItem(e);
-                    desplegableEstadoOrigen.addItem(e);
-                    desplegableEstadoDestino.addItem(e);
-                }
+
+            desplegableEstadoInicial.removeAllItems();
+            desplegableEstadoFinal.removeAllItems();
+            desplegableEstadoOrigen.removeAllItems();
+            desplegableEstadoDestino.removeAllItems();
+            for (String e : automataAFD.getEstados()) {
+
+                desplegableEstadoInicial.addItem(e);
+                desplegableEstadoFinal.addItem(e);
+                desplegableEstadoOrigen.addItem(e);
+                desplegableEstadoDestino.addItem(e);
             }
-            
+
         }
 
         pintarLienzo();
@@ -484,32 +507,47 @@ public class menu extends javax.swing.JFrame {
     private void jButtonPasoPasoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPasoPasoActionPerformed
 
         mxGraphComponent dibujo;
-
+        boolean errorEstado = false;
         if (!jTextFieldCadena.getText().isEmpty()) {
 
             if (jRadioButtonAFD.isSelected()) {
                 if (iCadena == 0) {
                     estadoActual = automataAFD.getEstadoInicial();
-                    dibujo = grafico.pintarPasoAFD(automataAFD, contenerdorEstados, estadoActual);
                 }
+                System.out.println(estadoActual);
                 estadoActual = automataAFD.getTransicion(estadoActual, jTextFieldCadena.getText().charAt(iCadena));
+
                 contenerdorEstados.addAll(automataAFD.getEstados());
                 dibujo = grafico.pintarPasoAFD(automataAFD, contenerdorEstados, estadoActual);
-
                 jScrollPane2.add(dibujo);
                 jScrollPane2.getViewport().add(dibujo);
                 jScrollPane2.revalidate();
                 jScrollPane2.repaint();
                 iCadena++;
+
             }
 
             if (iCadena == jTextFieldCadena.getText().length()) {
-                if (automataAFD.esFinal(estadoActual)) {
-                    JOptionPane.showMessageDialog(null, "Cadena aceptada", "Resultado", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Cadena rechazada", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+
+                boolean aceptado = false;
+                boolean error = false;
+
+                try {
+                    aceptado = automataAFD.reconocer(jTextFieldCadena.getText());
+
+                } catch (Exception ex) {
+                    error = true;
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.INFORMATION_MESSAGE);
                 }
-                //jButtonPasoPaso.setEnabled(false);
+
+                if (!error) {
+                    if (aceptado) {
+                        JOptionPane.showMessageDialog(null, "Cadena aceptada", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Cadena rechazada", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+
                 iCadena = 0;
             }
         } else {
@@ -524,13 +562,25 @@ public class menu extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         if (!jTextFieldEstadoAgregar.getText().isEmpty()) {
-            automataAFD.setEstado(jTextFieldEstadoAgregar.getText());
-            desplegableEstadoInicial.addItem(jTextFieldEstadoAgregar.getText());
-            desplegableEstadoFinal.addItem(jTextFieldEstadoAgregar.getText());
-            desplegableEstadoOrigen.addItem(jTextFieldEstadoAgregar.getText());
-            desplegableEstadoDestino.addItem(jTextFieldEstadoAgregar.getText());
-            jTextFieldEstadoAgregar.setText("");
-            pintarLienzo();
+
+            String estado = jTextFieldEstadoAgregar.getText();
+
+            if (!automataAFD.getEstados().contains(estado)) {
+
+                automataAFD.setEstado(jTextFieldEstadoAgregar.getText());
+                desplegableEstadoInicial.addItem(jTextFieldEstadoAgregar.getText());
+                desplegableEstadoFinal.addItem(jTextFieldEstadoAgregar.getText());
+                desplegableEstadoOrigen.addItem(jTextFieldEstadoAgregar.getText());
+                desplegableEstadoDestino.addItem(jTextFieldEstadoAgregar.getText());
+                jTextFieldEstadoAgregar.setText("");
+                jButtonDibujarAutomataActionPerformed(evt);
+                pintarLienzo();
+            } else {
+                jTextFieldEstadoAgregar.setText("");
+                jTextFieldEstadoAgregar.requestFocusInWindow();
+                JOptionPane.showMessageDialog(null, "Estado ya existente", "Error", JOptionPane.WARNING_MESSAGE);
+            }
+
         }
 
 
@@ -540,24 +590,30 @@ public class menu extends javax.swing.JFrame {
 
         automataAFD.agregarEstadoFinalUnico((String) desplegableEstadoFinal.getSelectedItem());
         automataAFD.setEstadoInicial((String) desplegableEstadoInicial.getSelectedItem());
+        jButtonDibujarAutomataActionPerformed(evt);
         pintarLienzo();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
         if (!jTextFieldSimboloT.getText().isEmpty()) {
+
             String origen = (String) desplegableEstadoOrigen.getSelectedItem();
             String destino = (String) desplegableEstadoDestino.getSelectedItem();
             String simboloString = jTextFieldSimboloT.getText();
             char simbolo = simboloString.charAt(0);
-            automataAFD.agregarTransicion(origen, simbolo, destino);
+            try {
+                automataAFD.agregarTransicion(origen, simbolo, destino);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+            }
             pintarLienzo();
+            jButtonDibujarAutomataActionPerformed(evt);
         }
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        
+    private void jButtonDibujarAutomataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDibujarAutomataActionPerformed
 
         mxGraphComponent dibujo;
         contenerdorEstados.addAll(automataAFD.getEstados());
@@ -572,7 +628,11 @@ public class menu extends javax.swing.JFrame {
         jScrollPane2.revalidate();
         jScrollPane2.repaint();
 
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_jButtonDibujarAutomataActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -623,13 +683,16 @@ public class menu extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JButton jButtonAgregarEstado;
     private javax.swing.JButton jButtonCompleto;
+    private javax.swing.JButton jButtonDibujarAutomata;
     private javax.swing.JButton jButtonPasoPaso;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;

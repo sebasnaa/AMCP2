@@ -6,6 +6,7 @@
 package amcp2;
 
 import Automatas.*;
+import Ventanas.menu;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
@@ -68,13 +69,13 @@ public class GrafoAutomata {
             } else if (estadoMuerto) {
                 mxGrafo.insertEdge(parent, null, "    " + t.getSimbolo(), contenedorEstados.get(estados.indexOf(t.getEstadoOrigen())), contenedorEstados.get(contenedorEstados.size() - 1));
             }
+
         }
 
-        //AJUSTES ESTÉTICOS EN EL GRAFO
+        //Ajuste de espaciado entre las celulas(nodos) interno y externo
         mxHierarchicalLayout layout = new mxHierarchicalLayout(mxGrafo);
-        layout.setInterRankCellSpacing(50.0);
-        layout.setIntraCellSpacing(50.0);
-        layout.setDisableEdgeStyle(false);
+        layout.setIntraCellSpacing(25.0);
+        layout.setInterRankCellSpacing(35.0);
         layout.execute(mxGrafo.getDefaultParent());
 
         mxGrafo.getModel().endUpdate();
@@ -114,13 +115,6 @@ public class GrafoAutomata {
 
         }
 
-        try {
-            mxCell mxx = (mxCell) contenedorEstados.get(estados.indexOf(estadoActual));
-            mxx.setStyle("estiloEstadoActivo");
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Caracter no valido en la cadena", "Error en reconocimiento", JOptionPane.WARNING_MESSAGE);
-        }
-
         //comprobamos si alguna transicion con destino es estado muerto 
         for (AFDTransicion t : automata.getTransiciones()) {
             if (t.getEstadoDestino().equals("-")) {
@@ -131,6 +125,25 @@ public class GrafoAutomata {
             contenedorEstados.add(mxGrafo.insertVertex(parent, null, "M", 100, 200, 50, 50, "estiloEstadoMuerto"));
             mxGrafo.insertEdge(parent, null, "          0,1 ", contenedorEstados.get(contenedorEstados.size() - 1), contenedorEstados.get(contenedorEstados.size() - 1));
 
+        }
+
+        //Pasos sobre estados no finales y no muerto
+        if (!estadoActual.equals("-") && !estadoActual.equals("estadoMuerto")) {
+
+            try {
+                mxCell mxx = (mxCell) contenedorEstados.get(estados.indexOf(estadoActual));
+                mxx.setStyle("estiloEstadoActivo");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Caracter no valido en la cadena", "Error en reconocimiento", JOptionPane.WARNING_MESSAGE);
+            }
+
+        } else {
+            for (Object s : contenedorEstados) {
+                mxCell mx = (mxCell) s;
+                if (mx.getValue().equals("M")) {
+                    mx.setStyle("estiloEstadoActivo");
+                }
+            }
         }
 
         for (AFDTransicion t : automata.getTransiciones()) {
@@ -144,9 +157,8 @@ public class GrafoAutomata {
 
         //AJUSTES ESTÉTICOS EN EL GRAFO
         mxHierarchicalLayout layout = new mxHierarchicalLayout(mxGrafo);
-        layout.setInterRankCellSpacing(50.0);
-        layout.setIntraCellSpacing(50.0);
-        layout.setDisableEdgeStyle(false);
+        layout.setIntraCellSpacing(25.0);
+        layout.setInterRankCellSpacing(35.0);
         layout.execute(mxGrafo.getDefaultParent());
 
         mxGrafo.getModel().endUpdate();
@@ -159,7 +171,5 @@ public class GrafoAutomata {
     public boolean isDibujoCompleto() {
         return dibujoCompleto;
     }
-    
-    
 
 }
