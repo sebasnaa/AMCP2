@@ -515,15 +515,21 @@ public class menu extends javax.swing.JFrame {
                     estadoActual = automataAFD.getEstadoInicial();
                 }
                 System.out.println(estadoActual);
+                
                 estadoActual = automataAFD.getTransicion(estadoActual, jTextFieldCadena.getText().charAt(iCadena));
 
-                contenerdorEstados.addAll(automataAFD.getEstados());
-                dibujo = grafico.pintarPasoAFD(automataAFD, contenerdorEstados, estadoActual);
-                jScrollPane2.add(dibujo);
-                jScrollPane2.getViewport().add(dibujo);
-                jScrollPane2.revalidate();
-                jScrollPane2.repaint();
-                iCadena++;
+                if(estadoActual.equals("estadoMuerto")){
+                    iCadena = jTextFieldCadena.getText().length();
+                }else{
+                    
+                    contenerdorEstados.addAll(automataAFD.getEstados());
+                    dibujo = grafico.pintarPasoAFD(automataAFD, contenerdorEstados, estadoActual);
+                    jScrollPane2.add(dibujo);
+                    jScrollPane2.getViewport().add(dibujo);
+                    jScrollPane2.revalidate();
+                    jScrollPane2.repaint();
+                    iCadena++;
+                }
 
             }
 
