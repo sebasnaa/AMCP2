@@ -6,10 +6,13 @@
 package Ventanas;
 
 import Automatas.AFD;
+import Automatas.AFND;
 import Ficheros.FicherosAutomatas;
 import amcp2.GrafoAutomata;
 import com.mxgraph.swing.mxGraphComponent;
 import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,6 +22,7 @@ import javax.swing.JOptionPane;
 public class menu extends javax.swing.JFrame {
 
     private AFD automataAFD = new AFD();
+    private AFND automataAFND = new AFND();
 
     private HashSet<String> contenerdorEstados = new HashSet();
     private HashSet<String> contenedorSimbolos = new HashSet();
@@ -30,9 +34,8 @@ public class menu extends javax.swing.JFrame {
     public menu() {
         initComponents();
         setLocationRelativeTo(null);
-        jRadioButtonAFD.setSelected(true);
-        etiquetaEstadosFinales.setVisible(false);
-        desplegableEstadosFinales.setVisible(false);
+//        jRadioButtonAFD.setSelected(true);
+        jRadioButtonAFND.setSelected(true);
 
         jButtonPasoPaso.setEnabled(false);
         jButtonCompleto.setEnabled(false);
@@ -48,7 +51,11 @@ public class menu extends javax.swing.JFrame {
     }
 
     public void pintarLienzo() {
-        jTextAreatoStringAutomata.setText(automataAFD.toString());
+        if (jRadioButtonAFD.isSelected()) {
+            jTextAreatoStringAutomata.setText(automataAFD.toString());
+        } else {
+            jTextAreatoStringAutomata.setText(automataAFND.toString());
+        }
     }
 
     /**
@@ -84,9 +91,7 @@ public class menu extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JSeparator();
         jSeparator3 = new javax.swing.JSeparator();
         jRadioButtonAFD = new javax.swing.JRadioButton();
-        etiquetaEstadosFinales = new javax.swing.JLabel();
         jRadioButtonAFND = new javax.swing.JRadioButton();
-        desplegableEstadosFinales = new javax.swing.JButton();
         jButtonPasoPaso = new javax.swing.JButton();
         jButtonCompleto = new javax.swing.JButton();
         jTextFieldCadena = new javax.swing.JTextField();
@@ -160,8 +165,6 @@ public class menu extends javax.swing.JFrame {
             }
         });
 
-        etiquetaEstadosFinales.setText("Estados Finales");
-
         buttonGroup1.add(jRadioButtonAFND);
         jRadioButtonAFND.setText("AFND");
         jRadioButtonAFND.addActionListener(new java.awt.event.ActionListener() {
@@ -169,8 +172,6 @@ public class menu extends javax.swing.JFrame {
                 jRadioButtonAFNDActionPerformed(evt);
             }
         });
-
-        desplegableEstadosFinales.setText("Seleccionar");
 
         jButtonPasoPaso.setText("Paso a Paso");
         jButtonPasoPaso.addActionListener(new java.awt.event.ActionListener() {
@@ -246,11 +247,7 @@ public class menu extends javax.swing.JFrame {
                                         .addGap(40, 40, 40)
                                         .addComponent(etiquetaEstadoFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(desplegableEstadoFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(etiquetaEstadosFinales)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(desplegableEstadosFinales))))
+                                .addComponent(desplegableEstadoFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(20, 20, 20)
@@ -285,7 +282,7 @@ public class menu extends javax.swing.JFrame {
                                 .addComponent(jRadioButtonAFD)
                                 .addGap(31, 31, 31)
                                 .addComponent(jRadioButtonAFND)))))
-                .addGap(38, 38, 38)
+                .addGap(77, 77, 77)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
@@ -352,10 +349,8 @@ public class menu extends javax.swing.JFrame {
                                     .addComponent(etiquetaEstadoFinal)
                                     .addComponent(desplegableEstadoFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(etiquetaEstadoInicial)
-                                    .addComponent(desplegableEstadoInicial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(etiquetaEstadosFinales)
-                                    .addComponent(desplegableEstadosFinales))
-                                .addGap(29, 29, 29)
+                                    .addComponent(desplegableEstadoInicial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(31, 31, 31)
                                 .addComponent(jButton1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -406,40 +401,69 @@ public class menu extends javax.swing.JFrame {
         iCadena = 0;
         EmergenteCargado Em = new EmergenteCargado(this);
         String nombreArchivo = Em.getNombreElegido();
-        mxGraphComponent dibujo;
+        mxGraphComponent dibujo = null;
+        contenerdorEstados.clear();
 
         if (nombreArchivo != null) {
 
             nombreArchivo = "datos/" + nombreArchivo;
 
-            try {
-                automataAFD = FicherosAutomatas.lecturaAFD(nombreArchivo);
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
+            if (jRadioButtonAFD.isSelected()) {
+
+                try {
+                    automataAFD = FicherosAutomatas.lecturaAFD(nombreArchivo);
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
+
+                contenerdorEstados.addAll(automataAFD.getEstados());
+                dibujo = grafico.pintarAFD(automataAFD, contenerdorEstados);
+
+                desplegableEstadoInicial.removeAllItems();
+                desplegableEstadoFinal.removeAllItems();
+                desplegableEstadoOrigen.removeAllItems();
+                desplegableEstadoDestino.removeAllItems();
+                for (String e : automataAFD.getEstados()) {
+
+                    desplegableEstadoInicial.addItem(e);
+                    desplegableEstadoFinal.addItem(e);
+                    desplegableEstadoOrigen.addItem(e);
+                    desplegableEstadoDestino.addItem(e);
+                }
+
+            } else {
+                try {
+                    automataAFND = FicherosAutomatas.lecturaAFND(nombreArchivo);
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
+
+                contenerdorEstados.addAll(automataAFND.getEstados());
+                dibujo = grafico.pintarAFND(automataAFND, contenerdorEstados);
+
+                desplegableEstadoInicial.removeAllItems();
+                desplegableEstadoFinal.removeAllItems();
+                desplegableEstadoOrigen.removeAllItems();
+                desplegableEstadoDestino.removeAllItems();
+                for (String e : automataAFND.getEstados()) {
+
+                    desplegableEstadoInicial.addItem(e);
+                    desplegableEstadoFinal.addItem(e);
+                    desplegableEstadoOrigen.addItem(e);
+                    desplegableEstadoDestino.addItem(e);
+                }
             }
 
-            contenerdorEstados.addAll(automataAFD.getEstados());
-            dibujo = grafico.pintarAFD(automataAFD, contenerdorEstados);
             if (grafico.isDibujoCompleto()) {
                 jButtonPasoPaso.setEnabled(true);
                 jButtonCompleto.setEnabled(true);
             }
 
-            jScrollPane2.add(dibujo);
-            jScrollPane2.getViewport().add(dibujo);
-            jScrollPane2.revalidate();
-            jScrollPane2.repaint();
-
-            desplegableEstadoInicial.removeAllItems();
-            desplegableEstadoFinal.removeAllItems();
-            desplegableEstadoOrigen.removeAllItems();
-            desplegableEstadoDestino.removeAllItems();
-            for (String e : automataAFD.getEstados()) {
-
-                desplegableEstadoInicial.addItem(e);
-                desplegableEstadoFinal.addItem(e);
-                desplegableEstadoOrigen.addItem(e);
-                desplegableEstadoDestino.addItem(e);
+            if (dibujo != null) {
+                jScrollPane2.add(dibujo);
+                jScrollPane2.getViewport().add(dibujo);
+                jScrollPane2.revalidate();
+                jScrollPane2.repaint();
             }
 
         }
@@ -454,20 +478,13 @@ public class menu extends javax.swing.JFrame {
 
     private void jRadioButtonAFNDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonAFNDActionPerformed
 
-        etiquetaEstadosFinales.setVisible(true);
-        desplegableEstadosFinales.setVisible(true);
-
-        etiquetaEstadoFinal.setVisible(false);
-        desplegableEstadoFinal.setVisible(false);
-
 
     }//GEN-LAST:event_jRadioButtonAFNDActionPerformed
 
     private void jRadioButtonAFDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonAFDActionPerformed
         etiquetaEstadoFinal.setVisible(true);
         desplegableEstadoFinal.setVisible(true);
-        etiquetaEstadosFinales.setVisible(false);
-        desplegableEstadosFinales.setVisible(false);
+
     }//GEN-LAST:event_jRadioButtonAFDActionPerformed
 
     private void jButtonCompletoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCompletoActionPerformed
@@ -481,6 +498,22 @@ public class menu extends javax.swing.JFrame {
                 try {
                     aceptado = automataAFD.reconocer(jTextFieldCadena.getText());
 
+                } catch (Exception ex) {
+                    error = true;
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.INFORMATION_MESSAGE);
+                }
+
+                if (!error) {
+                    if (aceptado) {
+                        JOptionPane.showMessageDialog(null, "Cadena aceptada", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Cadena rechazada", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+
+            } else {
+                try {
+                    aceptado = automataAFND.reconocer(jTextFieldCadena.getText());
                 } catch (Exception ex) {
                     error = true;
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.INFORMATION_MESSAGE);
@@ -515,13 +548,13 @@ public class menu extends javax.swing.JFrame {
                     estadoActual = automataAFD.getEstadoInicial();
                 }
                 System.out.println(estadoActual);
-                
+
                 estadoActual = automataAFD.getTransicion(estadoActual, jTextFieldCadena.getText().charAt(iCadena));
 
-                if(estadoActual.equals("estadoMuerto")){
+                if (estadoActual.equals("estadoMuerto")) {
                     iCadena = jTextFieldCadena.getText().length();
-                }else{
-                    
+                } else {
+
                     contenerdorEstados.addAll(automataAFD.getEstados());
                     dibujo = grafico.pintarPasoAFD(automataAFD, contenerdorEstados, estadoActual);
                     jScrollPane2.add(dibujo);
@@ -570,18 +603,30 @@ public class menu extends javax.swing.JFrame {
         if (!jTextFieldEstadoAgregar.getText().isEmpty()) {
 
             String estado = jTextFieldEstadoAgregar.getText();
+            boolean error = true;
+            if (jRadioButtonAFD.isSelected()) {
+                if (!automataAFD.getEstados().contains(estado)) {
+                    automataAFD.setEstado(estado);
+                    error = false;
+                }
 
-            if (!automataAFD.getEstados().contains(estado)) {
-
-                automataAFD.setEstado(jTextFieldEstadoAgregar.getText());
-                desplegableEstadoInicial.addItem(jTextFieldEstadoAgregar.getText());
-                desplegableEstadoFinal.addItem(jTextFieldEstadoAgregar.getText());
-                desplegableEstadoOrigen.addItem(jTextFieldEstadoAgregar.getText());
-                desplegableEstadoDestino.addItem(jTextFieldEstadoAgregar.getText());
+            } else {
+                if (!automataAFND.getEstados().contains(estado)) {
+                    automataAFND.setEstado(estado);
+                    error = false;
+                }
+            }
+            if (!error) {
+                desplegableEstadoInicial.addItem(estado);
+                desplegableEstadoFinal.addItem(estado);
+                desplegableEstadoOrigen.addItem(estado);
+                desplegableEstadoDestino.addItem(estado);
                 jTextFieldEstadoAgregar.setText("");
                 jButtonDibujarAutomataActionPerformed(evt);
                 pintarLienzo();
+
             } else {
+
                 jTextFieldEstadoAgregar.setText("");
                 jTextFieldEstadoAgregar.requestFocusInWindow();
                 JOptionPane.showMessageDialog(null, "Estado ya existente", "Error", JOptionPane.WARNING_MESSAGE);
@@ -594,8 +639,13 @@ public class menu extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        automataAFD.agregarEstadoFinalUnico((String) desplegableEstadoFinal.getSelectedItem());
-        automataAFD.setEstadoInicial((String) desplegableEstadoInicial.getSelectedItem());
+        if (jRadioButtonAFD.isSelected()) {
+            automataAFD.agregarEstadoFinalUnico((String) desplegableEstadoFinal.getSelectedItem());
+            automataAFD.setEstadoInicial((String) desplegableEstadoInicial.getSelectedItem());
+        } else {
+            automataAFND.setEstadoFinalUnico((String) desplegableEstadoFinal.getSelectedItem());
+            automataAFND.setEstadoInicial((String) desplegableEstadoInicial.getSelectedItem());
+        }
         jButtonDibujarAutomataActionPerformed(evt);
         pintarLienzo();
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -608,22 +658,44 @@ public class menu extends javax.swing.JFrame {
             String destino = (String) desplegableEstadoDestino.getSelectedItem();
             String simboloString = jTextFieldSimboloT.getText();
             char simbolo = simboloString.charAt(0);
-            try {
-                automataAFD.agregarTransicion(origen, simbolo, destino);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+
+            if (jRadioButtonAFD.isSelected()) {
+
+                try {
+                    automataAFD.agregarTransicion(origen, simbolo, destino);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+                }
+                pintarLienzo();
+                jButtonDibujarAutomataActionPerformed(evt);
+            } else {
+                try {
+                    automataAFND.agregarTransicion(origen, simbolo, destino);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+                }
+                pintarLienzo();
+                jButtonDibujarAutomataActionPerformed(evt);
+
             }
-            pintarLienzo();
-            jButtonDibujarAutomataActionPerformed(evt);
+
         }
+
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButtonDibujarAutomataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDibujarAutomataActionPerformed
 
-        mxGraphComponent dibujo;
-        contenerdorEstados.addAll(automataAFD.getEstados());
-        dibujo = grafico.pintarAFD(automataAFD, contenerdorEstados);
+        mxGraphComponent dibujo = null;
+
+        if (jRadioButtonAFD.isSelected()) {
+            contenerdorEstados.addAll(automataAFD.getEstados());
+            dibujo = grafico.pintarAFD(automataAFD, contenerdorEstados);
+        } else {
+            contenerdorEstados.addAll(automataAFND.getEstados());
+            dibujo = grafico.pintarAFND(automataAFND, contenerdorEstados);
+        }
+
         if (grafico.isDibujoCompleto()) {
             jButtonPasoPaso.setEnabled(true);
             jButtonCompleto.setEnabled(true);
@@ -682,10 +754,8 @@ public class menu extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> desplegableEstadoFinal;
     private javax.swing.JComboBox<String> desplegableEstadoInicial;
     private javax.swing.JComboBox<String> desplegableEstadoOrigen;
-    private javax.swing.JButton desplegableEstadosFinales;
     private javax.swing.JLabel etiquetaEstadoFinal;
     private javax.swing.JLabel etiquetaEstadoInicial;
-    private javax.swing.JLabel etiquetaEstadosFinales;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;

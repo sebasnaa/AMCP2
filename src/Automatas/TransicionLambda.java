@@ -15,13 +15,18 @@ import java.util.Objects;
 public class TransicionLambda {
 
     private String inicio;
-    private HashSet<String> destinos;
+    private HashSet<String> destinos = new HashSet();
 
     public TransicionLambda(String inicio, HashSet<String> destinos) {
         this.inicio = inicio;
         this.destinos = destinos;
     }
 
+    public TransicionLambda(String inicio, String destino) {
+        this.inicio = inicio;
+        this.destinos.add(destino);
+    }
+    
     public String getInicio() {
         return this.inicio;
     }
@@ -36,7 +41,7 @@ public class TransicionLambda {
         res += this.inicio;
 
         for (String s : this.destinos) {
-            res += s + " ";
+            res += " "+s;
         }
 
         return res;

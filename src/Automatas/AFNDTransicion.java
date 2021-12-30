@@ -16,7 +16,7 @@ public class AFNDTransicion {
 
     private String inicio;
     private char simbolo;
-    private HashSet<String> destinos;
+    private HashSet<String> destinos = new HashSet();
 
     public AFNDTransicion(String inicio, char simbolo, HashSet<String> destinos) {
         this.inicio = inicio;
@@ -24,12 +24,27 @@ public class AFNDTransicion {
         this.destinos = destinos;
     }
 
+    public AFNDTransicion(String inicio, char simbolo, String destino) {
+        this.inicio = inicio;
+        this.simbolo = simbolo;
+        this.destinos.add(destino);
+    }
+    
     public String getInicio() {
         return this.inicio;
     }
 
     public HashSet<String> getDestinos() {
         return this.destinos;
+    }
+    
+    public String getDestino(){
+        if(this.destinos.size()==1){
+            for(String s : destinos){
+                return s;
+            }
+        }
+        return "";
     }
 
     public char getSimbolo() {
@@ -39,7 +54,7 @@ public class AFNDTransicion {
     @Override
     public String toString() {
         String res = "";
-        res += this.simbolo + " " + this.inicio + " ";
+        res += this.inicio + " " + this.simbolo + " ";
         for (String s : this.destinos) {
             res += s + " ";
         }

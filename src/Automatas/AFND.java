@@ -19,12 +19,13 @@ public class AFND implements Cloneable, Proceso {
     private HashSet<String> estadosFinales;
     private HashSet<AFNDTransicion> transiciones;
     private HashSet<TransicionLambda> transicionesLambda;
+    private HashSet<String> estados;
 
     public AFND() {
         this.estadosFinales = new HashSet();
         this.transiciones = new HashSet();
         this.transicionesLambda = new HashSet();
-
+        this.estados = new HashSet();
     }
 
     public String getEstadoInicial() {
@@ -85,12 +86,29 @@ public class AFND implements Cloneable, Proceso {
         return new HashSet();
     }
 
+    public HashSet<String> getEstados() {
+        return this.estados;
+    }
+
     public void setEstadoInicial(String estado) {
         this.estadoInicial = estado;
     }
 
+    public void setEstados(HashSet<String> estados) {
+        this.estados = estados;
+    }
+
+    public void setEstado(String estado) {
+        this.estados.add(estado);
+    }
+
     public void setEstadosFinales(HashSet<String> estadosFinales) {
         this.estadosFinales = estadosFinales;
+    }
+
+    public void setEstadoFinalUnico(String estado) {
+        this.estadosFinales.clear();
+        this.estadosFinales.add(estado);
     }
 
     public void setTransiciones(HashSet<AFNDTransicion> transiciones) {
@@ -101,17 +119,26 @@ public class AFND implements Cloneable, Proceso {
         this.transicionesLambda = transiciones;
     }
 
-    /**
-     * @param e1 estado inicio
-     * @param simbolo simbolo de entrada
-     * @param ef estado destino
-     */
-    public void agregarTransicion(String e1, char simbolo, HashSet ef) {
-        this.transiciones.add(new AFNDTransicion(e1, simbolo, ef));
+    public void agregarTransicion(String e1, char simbolo, String ed) throws Exception {
+        AFNDTransicion t = new AFNDTransicion(e1, simbolo, ed);
+        agregarTransicion(t);
     }
 
-    public void agregarTransicion(AFNDTransicion t) {
+    public void agregarTransicion(AFNDTransicion t) throws Exception {
+
+        if (existeTransicion(t)) {
+            throw new Exception("La transacion ya existe");
+        }
         this.transiciones.add(t);
+    }
+
+    private boolean existeTransicion(AFNDTransicion trans) {
+        for (AFNDTransicion t : this.getTransiciones()) {
+            if (trans.equals(t)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -157,15 +184,16 @@ public class AFND implements Cloneable, Proceso {
         HashSet<String> res = new HashSet();
         res.add(estado);
 
-        for (TransicionLambda tl : transicionesLambda) {
+        for (TransicionLambda tl : this.transicionesLambda) {
             if (tl.getInicio().equals(estado)) {
-                tl.getDestinos().forEach((estadoDestino) -> {
-                    if (!estadoDestino.equals(tl.getInicio())) {
-                        res.addAll(clausuraLambda(estadoDestino));
+                for (String e : tl.getDestinos()) {
+                    if (!e.equals(tl.getInicio())) {
+                        res.addAll(clausuraLambda(e));
                     }
-                });
+                }
             }
         }
+
         return res;
     }
 
@@ -176,7 +204,7 @@ public class AFND implements Cloneable, Proceso {
      * @param estados
      * @return
      */
-    public HashSet clausuraLambda(HashSet<String> estados) {
+    public HashSet<String> clausuraLambda(HashSet<String> estados) {
         HashSet<String> res = new HashSet();
 
         for (String s : estados) {
@@ -212,26 +240,20 @@ public class AFND implements Cloneable, Proceso {
         }
 
         char[] simbolos = cadena.toCharArray();
+
         HashSet<String> estado = new HashSet();
         //agrego el estado inicial del automata
         estado.add(getEstadoInicial());
 
         //obtengo las transiciones Lambda
         estado = clausuraLambda(estado);
-
         for (int j = 0; j < simbolos.length; j++) {
 
             //compruebo el paso de estado consumiendo un caracter
             estado = getTransicion(estado, simbolos[j]);
 
-            HashSet<String> lambdas = clausuraLambda(estado);
-
-            for (String le : lambdas) {
-                estado.add(le);
-            }
-
-            if (estado.isEmpty()) {
-                throw new Exception("ERROR: no existe transicion posible con el caracter " + simbolos[j]);
+            for (String s : clausuraLambda(estado)) {
+                estado.add(s);
             }
 
         }
@@ -299,78 +321,76 @@ public class AFND implements Cloneable, Proceso {
         }
         transicionesLambda.removeAll(borrarInicioL);
     }
-    
+
     /**
      * Borra la transicino pasada
+     *
      * @param t transicion Lambda
      */
-    public void eliminarTransicionLambda(TransicionLambda t){
+    public void eliminarTransicionLambda(TransicionLambda t) {
         transicionesLambda.remove(t);
     }
-    
+
     /**
      * Borra la transicion pasada
+     *
      * @param t transicion
      */
-    public void eliminarTransicion(AFNDTransicion t){
+    public void eliminarTransicion(AFNDTransicion t) {
         transiciones.remove(t);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         String res = "";
-        
-        res+= "Estados -> ";
-        
-        HashSet<String> estados = new HashSet();
-        
-        for(AFNDTransicion s : transiciones){
-            estados.add(s.getInicio());
+
+        res += "Estados -> ";
+
+        for (String s : this.estados) {
+            if (!s.equals("-")) {
+                res += s + " ";
+            }
         }
-        
-        for(String e : estados){
-            res+= e + "\n";
-        }
-        
+
         res += "\nEstado Inicial -> " + estadoInicial;
         res += "\nEstados Finales -> ";
-        for(String e : estadosFinales){
+        for (String e : estadosFinales) {
             res += e + " ";
         }
-        
-        res += "\nTransiciones\n ";
-        for(AFNDTransicion t : transiciones){
+
+        res += "\nTransiciones:\n";
+        for (AFNDTransicion t : transiciones) {
             res += t + "\n";
         }
-        
-        
-        res += "\nTransiciones Lambda\n ";
-        for(TransicionLambda t : transicionesLambda){
+
+        res += "\nTransiciones Lambda:\n";
+        for (TransicionLambda t : transicionesLambda) {
             res += t + "\n";
         }
-        
+
         return res;
     }
-    
-    public Object clone(){
+
+    @Override
+    public Object clone() {
         AFND nuevo = null;
-        
+
         try {
             nuevo = (AFND) super.clone();
         } catch (CloneNotSupportedException ex) {
             System.out.println(ex.getMessage());
         }
-        
+
         nuevo.transiciones = new HashSet();
         nuevo.setTransiciones(this.transiciones);
-        
+
         nuevo.transicionesLambda = new HashSet();
         nuevo.setTransicionesLambda(this.transicionesLambda);
-        
+
         nuevo.estadosFinales = new HashSet();
         nuevo.setEstadosFinales(this.estadosFinales);
-        
+
         return nuevo;
     }
-    
+
 }
