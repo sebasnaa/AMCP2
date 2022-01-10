@@ -6,12 +6,14 @@
 package Ficheros;
 
 import Automatas.AFD;
+import Automatas.AFDTransicion;
 import Automatas.AFND;
 import Automatas.TransicionLambda;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -27,7 +29,7 @@ public class FicherosAutomatas {
         BufferedReader lector = new BufferedReader(new FileReader(archivo));
         boolean encontrado = false;
         String linea;
-
+        ArrayList<Character> simbolosUsados = new ArrayList<>();
         while ((linea = lector.readLine()) != null) {
 
             if (!linea.equals("FIN") && !linea.equals("")) {
@@ -57,6 +59,11 @@ public class FicherosAutomatas {
                     char simbolo = partes[2].charAt(1);
                     String estado1 = partes[1];
                     String estado2 = partes[3];
+
+                    if (!simbolosUsados.contains(simbolo)) {
+                        simbolosUsados.add(simbolo);
+                    }
+
                     if (estadosPermitidos.contains(estado1) && estadosPermitidos.contains(estado2)) {
                         res.agregarTransicion(estado1, simbolo, estado2);
                     } else {
@@ -71,6 +78,36 @@ public class FicherosAutomatas {
             }
 
         }
+
+        //comprobar si todos los estados tiene transicion destino
+        HashSet<AFDTransicion> trasicionesExistentes = res.getTransiciones();
+        int numeroTransicionesMinimas = simbolosUsados.size();
+        HashSet<String> estadosPermitodosMuerto = new HashSet(estadosPermitidos);
+        estadosPermitodosMuerto.remove("-");
+        for (String estado : estadosPermitidos) {
+            int contador = 0;
+            
+            for(AFDTransicion t : res.getTransiciones()){
+                if(t.getEstadoOrigen().equals(estado)){
+                    contador++;
+                }
+            }
+            
+            if(contador == numeroTransicionesMinimas){
+                System.out.println("Nodo completo "+ estado);
+            }else{
+                System.out.println("Necesita estado muerto " + estado);
+                //Compruebo que simbolos no utiliza, si no exsite devuelve el String "null"
+                for(Character sim : simbolosUsados){
+                    if(res.getTransicion(estado, sim).equals("null")){
+                        res.agregarTransicion(estado, sim, "-");
+                    }
+                }
+            }
+
+        }
+        
+        
 
         return res;
     }
