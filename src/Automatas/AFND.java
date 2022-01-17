@@ -45,13 +45,15 @@ public class AFND implements Cloneable, Proceso {
     }
 
     public HashSet<String> getTransicion(String estado, char simbolo) {
+        HashSet<String> res = new HashSet();
         for (AFNDTransicion t : this.transiciones) {
             if (t.getSimbolo() == simbolo && t.getInicio().equals(estado)) {
-                return t.getDestinos();
+                res.add(t.getDestino());
+//                return t.getDestinos();
             }
         }
         //Caso donde no se encuetre nada
-        return new HashSet();
+        return res;
     }
 
     /**

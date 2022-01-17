@@ -74,8 +74,8 @@ public class GrafoAutomata {
 
         //Ajuste de espaciado entre las celulas(nodos) interno y externo
         mxHierarchicalLayout layout = new mxHierarchicalLayout(mxGrafo);
-        layout.setIntraCellSpacing(25.0);
-        layout.setInterRankCellSpacing(35.0);
+        layout.setIntraCellSpacing(40.0);
+        layout.setInterRankCellSpacing(40.0);
         layout.execute(mxGrafo.getDefaultParent());
 
         mxGrafo.getModel().endUpdate();
@@ -147,10 +147,10 @@ public class GrafoAutomata {
             }
         }
 
-        //AJUSTES ESTÉTICOS EN EL GRAFO
+        //Ajuste de espaciado entre las celulas(nodos) interno y externo
         mxHierarchicalLayout layout = new mxHierarchicalLayout(mxGrafo);
-        layout.setIntraCellSpacing(25.0);
-        layout.setInterRankCellSpacing(35.0);
+        layout.setIntraCellSpacing(40.0);
+        layout.setInterRankCellSpacing(40.0);
         layout.execute(mxGrafo.getDefaultParent());
 
         mxGrafo.getModel().endUpdate();
@@ -191,8 +191,6 @@ public class GrafoAutomata {
             }
         }
 
-        
-
         if (estadoMuerto) {
             contenedorEstados.add(mxGrafo.insertVertex(parent, null, "M", 100, 200, 50, 50, "estiloEstadoMuerto"));
             mxGrafo.insertEdge(parent, null, "          0,1 ", contenedorEstados.get(contenedorEstados.size() - 1), contenedorEstados.get(contenedorEstados.size() - 1));
@@ -209,8 +207,79 @@ public class GrafoAutomata {
 
         //Ajuste de espaciado entre las celulas(nodos) interno y externo
         mxHierarchicalLayout layout = new mxHierarchicalLayout(mxGrafo);
-        layout.setIntraCellSpacing(25.0);
-        layout.setInterRankCellSpacing(35.0);
+        layout.setIntraCellSpacing(40.0);
+        layout.setInterRankCellSpacing(40.0);
+        layout.execute(mxGrafo.getDefaultParent());
+
+        mxGrafo.getModel().endUpdate();
+
+        dibujoCompleto = true;
+        return new mxGraphComponent(mxGrafo);
+    }
+
+    public mxGraphComponent pintarAFNDpaso(AFND automata, HashSet<String> estadosP, HashSet<String> estadosDestinos, HashSet<String> estadosLambda) {
+        estados.clear();
+        contenedorEstados.clear();
+
+        mxGrafo = new mxGrafoMod();
+
+        estados = new ArrayList<>(estadosP);
+        boolean estadoMuerto = false;
+        boolean multiplesDestinos = false;
+
+        estados.remove("-");
+        for (String e : estados) {
+            if (automata.getEstadoInicial().equals(e)) {
+                contenedorEstados.add(mxGrafo.insertVertex(parent, null, e, 100, 200, 50, 50, "estiloEstadoInicial"));
+            } else if (automata.getEstadosFinales().contains(e)) {
+                contenedorEstados.add(mxGrafo.insertVertex(parent, null, e, 100, 200, 50, 50, "estiloEstadoFinal"));
+            } else {
+                contenedorEstados.add(mxGrafo.insertVertex(parent, null, e, 100, 200, 50, 50, "estiloEstado"));
+            }
+
+        }
+
+        //comprobamos si alguna transicion con destino es estado muerto 
+        for (AFNDTransicion t : automata.getTransiciones()) {
+            if (t.getDestinos().contains("-")) {
+                estadoMuerto = true;
+                System.out.println("muerto");
+
+            }
+        }
+
+        if (estadoMuerto) {
+            contenedorEstados.add(mxGrafo.insertVertex(parent, null, "M", 100, 200, 50, 50, "estiloEstadoMuerto"));
+            mxGrafo.insertEdge(parent, null, "          0,1 ", contenedorEstados.get(contenedorEstados.size() - 1), contenedorEstados.get(contenedorEstados.size() - 1));
+
+        }
+        
+        
+ for (String s : estadosLambda) {
+            mxCell mxx = (mxCell) contenedorEstados.get(estados.indexOf(s));
+            mxx.setStyle("estiloEstadoLambda");
+        }
+        for (String s : estadosDestinos) {
+            mxCell mxx = (mxCell) contenedorEstados.get(estados.indexOf(s));
+            mxx.setStyle("estiloEstadoActivo");
+        }
+        
+       
+
+        
+
+        for (AFNDTransicion t : automata.getTransiciones()) {
+            if (!t.getDestino().equals("-")) {
+                mxGrafo.insertEdge(parent, null, "     " + t.getSimbolo(), contenedorEstados.get(estados.indexOf(t.getInicio())), contenedorEstados.get(estados.indexOf(t.getDestino())));
+            } else if (estadoMuerto) {
+                mxGrafo.insertEdge(parent, null, "    " + t.getSimbolo(), contenedorEstados.get(estados.indexOf(t.getInicio())), contenedorEstados.get(contenedorEstados.size() - 1));
+            }
+        }
+
+        //Ajuste de espaciado entre las celulas(nodos) interno y externo
+        mxHierarchicalLayout layout = new mxHierarchicalLayout(mxGrafo);
+        layout.setIntraCellSpacing(40.0);
+        layout.setInterRankCellSpacing(40.0);
         layout.execute(mxGrafo.getDefaultParent());
 
         mxGrafo.getModel().endUpdate();

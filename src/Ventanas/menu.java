@@ -30,6 +30,8 @@ public class menu extends javax.swing.JFrame {
 
     public static int iCadena = 0;
     private String estadoActual = "";
+    private HashSet<String> estadosDestinos = new HashSet<>();
+    private HashSet<String> estadosActualesLambda = new HashSet<>();
 
     public menu() {
         initComponents();
@@ -566,24 +568,80 @@ public class menu extends javax.swing.JFrame {
 
             }
 
-            if (iCadena == jTextFieldCadena.getText().length()) {
+            if (jRadioButtonAFND.isSelected()) {
+                //Tener en cuenta el estado inicial y los lamdas desde el inicio
+                HashSet<String> destinosDelambdas = new HashSet<String>();
+                HashSet<String> auxOrigen = new HashSet<String>();
+                if (iCadena == 0) {
+                    auxOrigen.add(automataAFND.getEstadoInicial());
+                } else {
+                    auxOrigen.addAll(estadosDestinos);
+                }
 
+                if (!auxOrigen.contains("estadoMuerto")) {
+                    estadosDestinos.addAll(automataAFND.getTransicion(auxOrigen, jTextFieldCadena.getText().charAt(iCadena)));
+
+                    for(String s:estadosActualesLambda){
+                        System.out.println(s);
+                    }
+                    
+                    for (String s : auxOrigen) {
+                        estadosActualesLambda.addAll(automataAFND.getTransicionLambda(s));
+                    }
+                    destinosDelambdas.addAll(automataAFND.getTransicion(estadosActualesLambda, jTextFieldCadena.getText().charAt(iCadena)));
+                    estadosDestinos.addAll(destinosDelambdas);
+
+                    contenerdorEstados.addAll(automataAFND.getEstados());
+                    dibujo = grafico.pintarAFNDpaso(automataAFND, contenerdorEstados, estadosDestinos, estadosActualesLambda);
+                    jScrollPane2.add(dibujo);
+                    jScrollPane2.getViewport().add(dibujo);
+                    jScrollPane2.revalidate();
+                    jScrollPane2.repaint();
+                    iCadena++;
+                    estadosActualesLambda.clear();
+                }
+
+            }
+
+            if (iCadena == jTextFieldCadena.getText().length()) {
                 boolean aceptado = false;
                 boolean error = false;
 
-                try {
-                    aceptado = automataAFD.reconocer(jTextFieldCadena.getText());
+                if (jRadioButtonAFD.isSelected()) {
 
-                } catch (Exception ex) {
-                    error = true;
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.INFORMATION_MESSAGE);
+                    try {
+                        aceptado = automataAFD.reconocer(jTextFieldCadena.getText());
+
+                    } catch (Exception ex) {
+                        error = true;
+                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                    if (!error) {
+                        if (aceptado) {
+                            JOptionPane.showMessageDialog(null, "Cadena aceptada", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Cadena rechazada", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
                 }
+                if (jRadioButtonAFND.isSelected()) {
 
-                if (!error) {
-                    if (aceptado) {
-                        JOptionPane.showMessageDialog(null, "Cadena aceptada", "Resultado", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Cadena rechazada", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                    try {
+                        aceptado = automataAFND.reconocer(jTextFieldCadena.getText());
+                        estadosDestinos.clear();
+                        estadosActualesLambda.clear();
+                    } catch (Exception ex) {
+                        error = true;
+                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                    if (!error) {
+                        if (aceptado) {
+                            JOptionPane.showMessageDialog(null, "Cadena aceptada", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Cadena rechazada", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                        }
                     }
                 }
 
